@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 49d7d26aa95e05f448393c7e4a029155
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 376232
+  packageName: Dustbin
+  packageVersion: 1.0
+  assetPath: Assets/Dustbin/FBX/Materials/Dustbin_BaseMap.mat
+  uploadId: 905890

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5a6e19275e546b048875096344fb9d95
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 376232
+  packageName: Dustbin
+  packageVersion: 1.0
+  assetPath: Assets/Dustbin/Prefabs/Dustbin.prefab
+  uploadId: 905890
