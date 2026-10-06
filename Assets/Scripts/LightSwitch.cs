@@ -6,6 +6,9 @@ public class LightSwitch : MonoBehaviour, IInteractable
     [SerializeField] private Light[] _lights;        // лампы, которыми управляет выключатель
     [SerializeField] private bool _isOn = true;      // начальное состояние
 
+    [Header("Вентиляторы")]
+    [SerializeField] private CeilingFan[] _fans;     // вентиляторы, которые крутятся, пока горит свет
+
     [Header("Необязательно")]
     [SerializeField] private Renderer[] _lampRenderers; // модели ламп со свечением (Emission)
     [SerializeField] private AudioSource _clickSound;   // звук щелчка
@@ -32,6 +35,11 @@ public class LightSwitch : MonoBehaviour, IInteractable
         foreach (Light lamp in _lights)
         {
             if (lamp != null) lamp.enabled = _isOn;
+        }
+
+        foreach (CeilingFan fan in _fans)
+        {
+            if (fan != null) fan.SetActive(_isOn);
         }
 
         foreach (Renderer rend in _lampRenderers)
