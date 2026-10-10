@@ -4,7 +4,7 @@ public class LightSwitch : MonoBehaviour, IInteractable
 {
     [Header("Свет")]
     [SerializeField] private Light[] _lights;        // лампы, которыми управляет выключатель
-    [SerializeField] private bool _isOn = true;      // начальное состояние
+    [SerializeField] private bool _isOn = false;     // начальное состояние
 
     [Header("Вентиляторы")]
     [SerializeField] private CeilingFan[] _fans;     // вентиляторы, которые крутятся, пока горит свет
