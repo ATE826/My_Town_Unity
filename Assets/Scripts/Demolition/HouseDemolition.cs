@@ -34,8 +34,26 @@ public class HouseDemolition : MonoBehaviour
 
     public bool IsDemolished { get; private set; }
 
+    // Габариты дома до обрушения (мировые), событие — в момент первого удара
+    public Bounds OriginalBounds { get; private set; }
+    public event System.Action<Bounds> Demolished;
+
     private void Awake()
     {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        if (renderers.Length > 0)
+        {
+            Bounds bounds = renderers[0].bounds;
+
+            foreach (Renderer r in renderers)
+            {
+                bounds.Encapsulate(r.bounds);
+            }
+
+            OriginalBounds = bounds;
+        }
+
         _bodies = GetComponentsInChildren<Rigidbody>();
         _scales = new Vector3[_bodies.Length];
         _releaseAt = new float[_bodies.Length];
@@ -81,6 +99,7 @@ public class HouseDemolition : MonoBehaviour
         }
 
         enabled = true;
+        Demolished?.Invoke(OriginalBounds);
     }
 
     private void Update()

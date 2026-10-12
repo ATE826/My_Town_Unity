@@ -84,6 +84,8 @@ public class ExcavatorController : MonoBehaviour
     private PlayerController _player;
 
     private bool _driving;
+
+    public bool IsDriven => _driving;
     private float _throttle;
     private float _steer;
     private float _forwardSpeed;

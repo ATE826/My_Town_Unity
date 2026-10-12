@@ -171,12 +171,59 @@ public static class HouseFractureSetup
         }
 
         Undo.AddComponent<HouseDemolition>(root);
+        EnsureCollapseSound(root);
 
         AssetDatabase.SaveAssets();
         EditorSceneManager.MarkSceneDirty(root.scene);
 
         Notify("Готово: дом разрезан на " + chunkCount + " кусков (объект Chunks внутри дома).\n\n" +
             "Теперь наедьте на дом бульдозером.");
+        return true;
+    }
+
+    // 3D-источник звука обрушения в центре дома; назначается в поле Collapse Sound
+    public static bool EnsureCollapseSound(GameObject root)
+    {
+        var demolition = root.GetComponent<HouseDemolition>();
+
+        if (demolition == null)
+        {
+            return false;
+        }
+
+        var so = new SerializedObject(demolition);
+        SerializedProperty property = so.FindProperty("_collapseSound");
+
+        if (property == null || property.objectReferenceValue != null)
+        {
+            return false;
+        }
+
+        var soundObject = new GameObject("Sound_Collapse");
+        Undo.RegisterCreatedObjectUndo(soundObject, "Collapse Sound");
+        soundObject.transform.SetParent(root.transform, false);
+
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        if (renderers.Length > 0)
+        {
+            Bounds bounds = renderers[0].bounds;
+            foreach (Renderer r in renderers) bounds.Encapsulate(r.bounds);
+            soundObject.transform.position = bounds.center;
+        }
+
+        var source = soundObject.AddComponent<AudioSource>();
+        source.playOnAwake = false;
+        source.loop = false;
+        source.spatialBlend = 1f;
+        source.minDistance = 10f;
+        source.maxDistance = 150f;
+        source.rolloffMode = AudioRolloffMode.Linear;
+
+        property.objectReferenceValue = source;
+        so.ApplyModifiedProperties();
+
+        EditorSceneManager.MarkSceneDirty(root.scene);
         return true;
     }
 

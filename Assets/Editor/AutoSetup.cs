@@ -11,8 +11,8 @@ using UnityEngine.SceneManagement;
 [InitializeOnLoad]
 public static class AutoSetup
 {
-    private const string BulldozerModel = "Assets/bulldozer/source/LP_Tractor2.fbx";
-    private const string HouseModel = "Assets/old-house/source/1.fbx";
+    private const string BulldozerModel = "Assets/Models/Vehicles/bulldozer/source/LP_Tractor2.fbx";
+    private const string HouseModel = "Assets/Models/Buildings/old-house/source/1.fbx";
     private const string SessionKey = "AutoSetup.Done";
 
     static AutoSetup()
@@ -32,8 +32,7 @@ public static class AutoSetup
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode ||
             EditorApplication.isCompiling ||
-            EditorApplication.isUpdating ||
-            SessionState.GetBool(SessionKey, false))
+            EditorApplication.isUpdating)
         {
             return;
         }
@@ -41,6 +40,15 @@ public static class AutoSetup
         Scene scene = SceneManager.GetActiveScene();
 
         if (!scene.isLoaded)
+        {
+            return;
+        }
+
+        EnsureHouseSounds(scene);
+        EnsureCrew(scene);
+        EnsureHierarchy(scene);
+
+        if (SessionState.GetBool(SessionKey, false))
         {
             return;
         }
@@ -116,6 +124,43 @@ public static class AutoSetup
         {
             EditorSceneManager.SaveScene(scene);
             Debug.Log("[AutoSetup] Скрипты повешены на бульдозер и дом, сцена сохранена.");
+        }
+    }
+
+    private static void EnsureHouseSounds(Scene scene)
+    {
+        bool changed = false;
+
+        foreach (GameObject root in scene.GetRootGameObjects())
+        {
+            foreach (HouseDemolition house in root.GetComponentsInChildren<HouseDemolition>(true))
+            {
+                changed |= HouseFractureSetup.EnsureCollapseSound(house.gameObject);
+            }
+        }
+
+        if (changed)
+        {
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[AutoSetup] Добавлен источник звука обрушения (Sound_Collapse), сцена сохранена.");
+        }
+    }
+
+    private static void EnsureCrew(Scene scene)
+    {
+        if (ConstructionCrewSetup.Ensure(scene))
+        {
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[AutoSetup] Бригада строителей (ConstructionCrew) настроена, сцена сохранена.");
+        }
+    }
+
+    private static void EnsureHierarchy(Scene scene)
+    {
+        if (HierarchyOrganizer.Run(scene))
+        {
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[AutoSetup] Иерархия приведена в порядок, сцена сохранена.");
         }
     }
 }

@@ -34,6 +34,8 @@ public class BulldozerController : MonoBehaviour
     private AudioListener _cabListener;
 
     private bool _driving;
+
+    public bool IsDriven => _driving;
     private float _throttle;
     private float _steer;
     private float _forwardSpeed;

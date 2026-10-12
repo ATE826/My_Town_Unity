@@ -21,9 +21,8 @@ public class DemolitionChunk : MonoBehaviour
 
         Collider other = collision.collider;
 
-        bool isVehicle =
-            other.GetComponentInParent<BulldozerController>() != null ||
-            other.GetComponentInParent<ExcavatorController>() != null;
+        // Здание ломает только бульдозер
+        bool isVehicle = other.GetComponentInParent<BulldozerController>() != null;
 
         if (!isVehicle)
         {
